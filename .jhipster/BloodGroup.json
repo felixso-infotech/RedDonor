@@ -1,0 +1,21 @@
+{
+    "name": "BloodGroup",
+    "fields": [
+        {
+            "fieldName": "bloodGroup",
+            "fieldType": "String"
+        }
+    ],
+    "relationships": [],
+    "changelogDate": "20190403141600",
+    "javadoc": "BloodGroup entity.\n@Author Sarangi Balu",
+    "entityTableName": "blood_group",
+    "dto": "mapstruct",
+    "pagination": "pagination",
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "RedDonor",
+    "applications": "*",
+    "microserviceName": "RedDonor"
+}

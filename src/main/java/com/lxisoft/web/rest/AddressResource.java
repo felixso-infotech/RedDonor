@@ -26,8 +26,11 @@ import java.util.stream.StreamSupport;
 /**
  * REST controller for managing Address.
  */
-@RestController
-@RequestMapping("/api")
+/*
+ * @RestController
+ * 
+ * @RequestMapping("/api")
+ */
 public class AddressResource {
 
     private final Logger log = LoggerFactory.getLogger(AddressResource.class);

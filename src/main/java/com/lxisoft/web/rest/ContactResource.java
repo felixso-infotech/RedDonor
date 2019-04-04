@@ -25,8 +25,11 @@ import java.util.Optional;
 /**
  * REST controller for managing Contact.
  */
-@RestController
-@RequestMapping("/api")
+/*
+ * @RestController
+ * 
+ * @RequestMapping("/api")
+ */
 public class ContactResource {
 
     private final Logger log = LoggerFactory.getLogger(ContactResource.class);

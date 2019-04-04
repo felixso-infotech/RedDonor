@@ -15,6 +15,52 @@
  */
 package com.lxisoft.service;
 
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import com.lxisoft.service.dto.AddressDTO;
+import com.lxisoft.service.dto.ContactDTO;
+
 public interface AggregateService {
+	
+	 /**
+     * Save a contact.
+     *
+     * @param contactDTO the entity to save
+     * @return the persisted entity
+     */
+    ContactDTO saveContact(ContactDTO contactDTO);
+
+    /**
+     * Get all the contacts.
+     *
+     * @param pageable the pagination information
+     * @return the list of entities
+     */
+    Page<ContactDTO> findAllContacts(Pageable pageable);
+    
+    /**
+     * Save a address.
+     *
+     * @param addressDTO the entity to save
+     * @return the persisted entity
+     */
+    AddressDTO saveAddress(AddressDTO addressDTO);
+
+    /**
+     * Get all the addresses.
+     *
+     * @param pageable the pagination information
+     * @return the list of entities
+     */
+    Page<AddressDTO> findAllAddress(Pageable pageable);
+    /**
+     * Get all the AddressDTO where Contact is null.
+     *
+     * @return the list of entities
+     */
+    List<AddressDTO> findAllWhereContactIsNull();
 
 }

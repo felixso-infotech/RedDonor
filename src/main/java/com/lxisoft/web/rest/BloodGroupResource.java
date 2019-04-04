@@ -25,8 +25,11 @@ import java.util.Optional;
 /**
  * REST controller for managing BloodGroup.
  */
-@RestController
-@RequestMapping("/api")
+/*
+ * @RestController
+ * 
+ * @RequestMapping("/api")
+ */
 public class BloodGroupResource {
 
     private final Logger log = LoggerFactory.getLogger(BloodGroupResource.class);

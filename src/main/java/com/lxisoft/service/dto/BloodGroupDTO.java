@@ -1,5 +1,4 @@
 package com.lxisoft.service.dto;
-
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -11,6 +10,7 @@ public class BloodGroupDTO implements Serializable {
     private Long id;
 
     private String bloodGroup;
+
 
     public Long getId() {
         return id;

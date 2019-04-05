@@ -2,7 +2,7 @@
     "name": "Contact",
     "fields": [
         {
-            "fieldName": "name",
+            "fieldName": "displayName",
             "fieldType": "String"
         },
         {
@@ -25,33 +25,37 @@
     "relationships": [
         {
             "relationshipType": "one-to-one",
-            "relationshipName": "address",
             "otherEntityName": "address",
+            "otherEntityRelationshipName": "contact",
+            "relationshipName": "address",
             "otherEntityField": "id",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "contact"
-        },
-        {
-            "relationshipName": "contact",
-            "otherEntityName": "contact",
-            "relationshipType": "many-to-one",
-            "otherEntityField": "id"
-        },
-        {
-            "relationshipType": "one-to-many",
-            "relationshipName": "contacts",
-            "otherEntityName": "contact",
-            "otherEntityRelationshipName": "contact"
+            "ownerSide": true
         },
         {
             "relationshipType": "many-to-one",
-            "relationshipName": "bloodGroup",
             "otherEntityName": "bloodGroup",
+            "otherEntityRelationshipName": "contact",
+            "relationshipName": "bloodGroup",
             "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityName": "contact",
+            "otherEntityRelationshipName": "contactSet",
+            "relationshipName": "contactSet",
+            "otherEntityField": "id",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityName": "contact",
+            "otherEntityRelationshipName": "contactSet",
+            "relationshipName": "contactSet",
+            "otherEntityField": "id",
+            "ownerSide": false
         }
     ],
     "changelogDate": "20190403141559",
-    "javadoc": "Contact entity.\n@Author Anjali",
     "entityTableName": "contact",
     "dto": "mapstruct",
     "pagination": "pagination",

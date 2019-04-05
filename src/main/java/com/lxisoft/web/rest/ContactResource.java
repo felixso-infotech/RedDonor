@@ -1,6 +1,4 @@
 package com.lxisoft.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
 import com.lxisoft.service.ContactService;
 import com.lxisoft.web.rest.errors.BadRequestAlertException;
 import com.lxisoft.web.rest.util.HeaderUtil;
@@ -25,11 +23,8 @@ import java.util.Optional;
 /**
  * REST controller for managing Contact.
  */
-/*
- * @RestController
- * 
- * @RequestMapping("/api")
- */
+@RestController
+@RequestMapping("/api")
 public class ContactResource {
 
     private final Logger log = LoggerFactory.getLogger(ContactResource.class);
@@ -50,7 +45,6 @@ public class ContactResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/contacts")
-    @Timed
     public ResponseEntity<ContactDTO> createContact(@RequestBody ContactDTO contactDTO) throws URISyntaxException {
         log.debug("REST request to save Contact : {}", contactDTO);
         if (contactDTO.getId() != null) {
@@ -72,7 +66,6 @@ public class ContactResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/contacts")
-    @Timed
     public ResponseEntity<ContactDTO> updateContact(@RequestBody ContactDTO contactDTO) throws URISyntaxException {
         log.debug("REST request to update Contact : {}", contactDTO);
         if (contactDTO.getId() == null) {
@@ -88,14 +81,19 @@ public class ContactResource {
      * GET  /contacts : get all the contacts.
      *
      * @param pageable the pagination information
+     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many)
      * @return the ResponseEntity with status 200 (OK) and the list of contacts in body
      */
     @GetMapping("/contacts")
-    @Timed
-    public ResponseEntity<List<ContactDTO>> getAllContacts(Pageable pageable) {
+    public ResponseEntity<List<ContactDTO>> getAllContacts(Pageable pageable, @RequestParam(required = false, defaultValue = "false") boolean eagerload) {
         log.debug("REST request to get a page of Contacts");
-        Page<ContactDTO> page = contactService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/contacts");
+        Page<ContactDTO> page;
+        if (eagerload) {
+            page = contactService.findAllWithEagerRelationships(pageable);
+        } else {
+            page = contactService.findAll(pageable);
+        }
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, String.format("/api/contacts?eagerload=%b", eagerload));
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
@@ -106,7 +104,6 @@ public class ContactResource {
      * @return the ResponseEntity with status 200 (OK) and with body the contactDTO, or with status 404 (Not Found)
      */
     @GetMapping("/contacts/{id}")
-    @Timed
     public ResponseEntity<ContactDTO> getContact(@PathVariable Long id) {
         log.debug("REST request to get Contact : {}", id);
         Optional<ContactDTO> contactDTO = contactService.findOne(id);
@@ -120,7 +117,6 @@ public class ContactResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/contacts/{id}")
-    @Timed
     public ResponseEntity<Void> deleteContact(@PathVariable Long id) {
         log.debug("REST request to delete Contact : {}", id);
         contactService.delete(id);

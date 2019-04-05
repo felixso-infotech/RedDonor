@@ -1,8 +1,8 @@
 package com.lxisoft.domain;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModel;
 
 import javax.persistence.*;
 
@@ -12,22 +12,20 @@ import java.util.Set;
 import java.util.Objects;
 
 /**
- * Contact entity.
- * @Author Anjali
+ * A Contact.
  */
-@ApiModel(description = "Contact entity. @Author Anjali")
 @Entity
 @Table(name = "contact")
 public class Contact implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "display_name")
+    private String displayName;
 
     @Column(name = "phone_number")
     private Long phoneNumber;
@@ -41,18 +39,23 @@ public class Contact implements Serializable {
     @Column(name = "is_eligible")
     private Boolean isEligible;
 
-    @OneToOne    @JoinColumn(unique = true)
+    @OneToOne
+    @JoinColumn(unique = true)
     private Address address;
 
     @ManyToOne
     @JsonIgnoreProperties("contacts")
-    private Contact contact;
-
-    @OneToMany(mappedBy = "contact")
-    private Set<Contact> contacts = new HashSet<>();
-    @ManyToOne
-    @JsonIgnoreProperties("")
     private BloodGroup bloodGroup;
+
+    @ManyToMany
+    @JoinTable(name = "contact_contact_set",
+               joinColumns = @JoinColumn(name = "contact_id", referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "contact_set_id", referencedColumnName = "id"))
+    private Set<Contact> contactSets = new HashSet<>();
+
+    @ManyToMany(mappedBy = "contactSets")
+    @JsonIgnore
+    private Set<Contact> contactSets = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -63,17 +66,17 @@ public class Contact implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public Contact name(String name) {
-        this.name = name;
+    public Contact displayName(String displayName) {
+        this.displayName = displayName;
         return this;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public Long getPhoneNumber() {
@@ -141,44 +144,6 @@ public class Contact implements Serializable {
         this.address = address;
     }
 
-    public Contact getContact() {
-        return contact;
-    }
-
-    public Contact contact(Contact contact) {
-        this.contact = contact;
-        return this;
-    }
-
-    public void setContact(Contact contact) {
-        this.contact = contact;
-    }
-
-    public Set<Contact> getContacts() {
-        return contacts;
-    }
-
-    public Contact contacts(Set<Contact> contacts) {
-        this.contacts = contacts;
-        return this;
-    }
-
-    public Contact addContacts(Contact contact) {
-        this.contacts.add(contact);
-        contact.setContact(this);
-        return this;
-    }
-
-    public Contact removeContacts(Contact contact) {
-        this.contacts.remove(contact);
-        contact.setContact(null);
-        return this;
-    }
-
-    public void setContacts(Set<Contact> contacts) {
-        this.contacts = contacts;
-    }
-
     public BloodGroup getBloodGroup() {
         return bloodGroup;
     }
@@ -190,6 +155,56 @@ public class Contact implements Serializable {
 
     public void setBloodGroup(BloodGroup bloodGroup) {
         this.bloodGroup = bloodGroup;
+    }
+
+    public Set<Contact> getContactSets() {
+        return contactSets;
+    }
+
+    public Contact contactSets(Set<Contact> contacts) {
+        this.contactSets = contacts;
+        return this;
+    }
+
+    public Contact addContactSet(Contact contact) {
+        this.contactSets.add(contact);
+        contact.getContactSets().add(this);
+        return this;
+    }
+
+    public Contact removeContactSet(Contact contact) {
+        this.contactSets.remove(contact);
+        contact.getContactSets().remove(this);
+        return this;
+    }
+
+    public void setContactSets(Set<Contact> contacts) {
+        this.contactSets = contacts;
+    }
+
+    public Set<Contact> getContactSets() {
+        return contactSets;
+    }
+
+    public Contact contactSets(Set<Contact> contacts) {
+        this.contactSets = contacts;
+        return this;
+    }
+
+    public Contact addContactSet(Contact contact) {
+        this.contactSets.add(contact);
+        contact.getContactSets().add(this);
+        return this;
+    }
+
+    public Contact removeContactSet(Contact contact) {
+        this.contactSets.remove(contact);
+        contact.getContactSets().remove(this);
+        return this;
+    }
+
+    public void setContactSets(Set<Contact> contacts) {
+        this.contactSets = contacts;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -217,7 +232,7 @@ public class Contact implements Serializable {
     public String toString() {
         return "Contact{" +
             "id=" + getId() +
-            ", name='" + getName() + "'" +
+            ", displayName='" + getDisplayName() + "'" +
             ", phoneNumber=" + getPhoneNumber() +
             ", email='" + getEmail() + "'" +
             ", age=" + getAge() +

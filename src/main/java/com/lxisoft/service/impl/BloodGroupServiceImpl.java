@@ -42,7 +42,6 @@ public class BloodGroupServiceImpl implements BloodGroupService {
     @Override
     public BloodGroupDTO save(BloodGroupDTO bloodGroupDTO) {
         log.debug("Request to save BloodGroup : {}", bloodGroupDTO);
-
         BloodGroup bloodGroup = bloodGroupMapper.toEntity(bloodGroupDTO);
         bloodGroup = bloodGroupRepository.save(bloodGroup);
         return bloodGroupMapper.toDto(bloodGroup);

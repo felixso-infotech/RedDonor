@@ -3,7 +3,7 @@
 *@Author Anjali
 */
 entity Contact{
- name String,
+ displayName String,
  phoneNumber Long,
  email String,
  age Long,
@@ -38,8 +38,8 @@ relationship ManyToOne{
   Contact{bloodGroup} to BloodGroup
  }
  
- relationship OneToMany{
-  Contact{contacts} to Contact
+ relationship ManyToMany{
+  Contact{contactSet} to Contact{contactSet}
  }
  
 paginate * with pagination

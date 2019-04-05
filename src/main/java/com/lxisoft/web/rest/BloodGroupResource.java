@@ -1,6 +1,4 @@
 package com.lxisoft.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
 import com.lxisoft.service.BloodGroupService;
 import com.lxisoft.web.rest.errors.BadRequestAlertException;
 import com.lxisoft.web.rest.util.HeaderUtil;
@@ -25,11 +23,8 @@ import java.util.Optional;
 /**
  * REST controller for managing BloodGroup.
  */
-/*
- * @RestController
- * 
- * @RequestMapping("/api")
- */
+@RestController
+@RequestMapping("/api")
 public class BloodGroupResource {
 
     private final Logger log = LoggerFactory.getLogger(BloodGroupResource.class);
@@ -50,7 +45,6 @@ public class BloodGroupResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/blood-groups")
-    @Timed
     public ResponseEntity<BloodGroupDTO> createBloodGroup(@RequestBody BloodGroupDTO bloodGroupDTO) throws URISyntaxException {
         log.debug("REST request to save BloodGroup : {}", bloodGroupDTO);
         if (bloodGroupDTO.getId() != null) {
@@ -72,7 +66,6 @@ public class BloodGroupResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/blood-groups")
-    @Timed
     public ResponseEntity<BloodGroupDTO> updateBloodGroup(@RequestBody BloodGroupDTO bloodGroupDTO) throws URISyntaxException {
         log.debug("REST request to update BloodGroup : {}", bloodGroupDTO);
         if (bloodGroupDTO.getId() == null) {
@@ -91,7 +84,6 @@ public class BloodGroupResource {
      * @return the ResponseEntity with status 200 (OK) and the list of bloodGroups in body
      */
     @GetMapping("/blood-groups")
-    @Timed
     public ResponseEntity<List<BloodGroupDTO>> getAllBloodGroups(Pageable pageable) {
         log.debug("REST request to get a page of BloodGroups");
         Page<BloodGroupDTO> page = bloodGroupService.findAll(pageable);
@@ -106,7 +98,6 @@ public class BloodGroupResource {
      * @return the ResponseEntity with status 200 (OK) and with body the bloodGroupDTO, or with status 404 (Not Found)
      */
     @GetMapping("/blood-groups/{id}")
-    @Timed
     public ResponseEntity<BloodGroupDTO> getBloodGroup(@PathVariable Long id) {
         log.debug("REST request to get BloodGroup : {}", id);
         Optional<BloodGroupDTO> bloodGroupDTO = bloodGroupService.findOne(id);
@@ -120,7 +111,6 @@ public class BloodGroupResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/blood-groups/{id}")
-    @Timed
     public ResponseEntity<Void> deleteBloodGroup(@PathVariable Long id) {
         log.debug("REST request to delete BloodGroup : {}", id);
         bloodGroupService.delete(id);

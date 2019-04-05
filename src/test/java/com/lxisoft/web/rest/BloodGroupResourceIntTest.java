@@ -22,6 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -66,6 +67,9 @@ public class BloodGroupResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restBloodGroupMockMvc;
 
     private BloodGroup bloodGroup;
@@ -78,7 +82,8 @@ public class BloodGroupResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -228,7 +233,7 @@ public class BloodGroupResourceIntTest {
 
         int databaseSizeBeforeDelete = bloodGroupRepository.findAll().size();
 
-        // Get the bloodGroup
+        // Delete the bloodGroup
         restBloodGroupMockMvc.perform(delete("/api/blood-groups/{id}", bloodGroup.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());

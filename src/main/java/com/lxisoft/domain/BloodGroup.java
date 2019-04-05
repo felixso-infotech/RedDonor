@@ -1,6 +1,6 @@
 package com.lxisoft.domain;
 
-import io.swagger.annotations.ApiModel;
+
 
 import javax.persistence.*;
 
@@ -8,16 +8,14 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * BloodGroup entity.
- * @Author Sarangi Balu
+ * A BloodGroup.
  */
-@ApiModel(description = "BloodGroup entity. @Author Sarangi Balu")
 @Entity
 @Table(name = "blood_group")
 public class BloodGroup implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

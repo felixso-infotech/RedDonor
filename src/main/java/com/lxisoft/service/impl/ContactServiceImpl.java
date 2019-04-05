@@ -42,7 +42,6 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public ContactDTO save(ContactDTO contactDTO) {
         log.debug("Request to save Contact : {}", contactDTO);
-
         Contact contact = contactMapper.toEntity(contactDTO);
         contact = contactRepository.save(contact);
         return contactMapper.toDto(contact);
@@ -62,6 +61,15 @@ public class ContactServiceImpl implements ContactService {
             .map(contactMapper::toDto);
     }
 
+    /**
+     * Get all the Contact with eager load of many-to-many relationships.
+     *
+     * @return the list of entities
+     */
+    public Page<ContactDTO> findAllWithEagerRelationships(Pageable pageable) {
+        return contactRepository.findAllWithEagerRelationships(pageable).map(contactMapper::toDto);
+    }
+    
 
     /**
      * Get one contact by id.
@@ -73,7 +81,7 @@ public class ContactServiceImpl implements ContactService {
     @Transactional(readOnly = true)
     public Optional<ContactDTO> findOne(Long id) {
         log.debug("Request to get Contact : {}", id);
-        return contactRepository.findById(id)
+        return contactRepository.findOneWithEagerRelationships(id)
             .map(contactMapper::toDto);
     }
 

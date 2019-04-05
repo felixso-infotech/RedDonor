@@ -1,6 +1,7 @@
 package com.lxisoft.service.dto;
-
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -10,7 +11,7 @@ public class ContactDTO implements Serializable {
 
     private Long id;
 
-    private String name;
+    private String displayName;
 
     private Long phoneNumber;
 
@@ -20,11 +21,12 @@ public class ContactDTO implements Serializable {
 
     private Boolean isEligible;
 
+
     private Long addressId;
 
-    private Long contactId;
-
     private Long bloodGroupId;
+
+    private Set<ContactDTO> contactSets = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -34,12 +36,12 @@ public class ContactDTO implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public Long getPhoneNumber() {
@@ -82,20 +84,20 @@ public class ContactDTO implements Serializable {
         this.addressId = addressId;
     }
 
-    public Long getContactId() {
-        return contactId;
-    }
-
-    public void setContactId(Long contactId) {
-        this.contactId = contactId;
-    }
-
     public Long getBloodGroupId() {
         return bloodGroupId;
     }
 
     public void setBloodGroupId(Long bloodGroupId) {
         this.bloodGroupId = bloodGroupId;
+    }
+
+    public Set<ContactDTO> getContactSets() {
+        return contactSets;
+    }
+
+    public void setContactSets(Set<ContactDTO> contacts) {
+        this.contactSets = contacts;
     }
 
     @Override
@@ -123,13 +125,12 @@ public class ContactDTO implements Serializable {
     public String toString() {
         return "ContactDTO{" +
             "id=" + getId() +
-            ", name='" + getName() + "'" +
+            ", displayName='" + getDisplayName() + "'" +
             ", phoneNumber=" + getPhoneNumber() +
             ", email='" + getEmail() + "'" +
             ", age=" + getAge() +
             ", isEligible='" + isIsEligible() + "'" +
             ", address=" + getAddressId() +
-            ", contact=" + getContactId() +
             ", bloodGroup=" + getBloodGroupId() +
             "}";
     }

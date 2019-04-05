@@ -14,17 +14,22 @@
                                  referencedColumnNames="id"
                                  referencedTableName="address"/>
 
-        <addForeignKeyConstraint baseColumnNames="contact_id"
-                                 baseTableName="contact"
-                                 constraintName="fk_contact_contact_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="contact"/>
-
         <addForeignKeyConstraint baseColumnNames="blood_group_id"
                                  baseTableName="contact"
                                  constraintName="fk_contact_blood_group_id"
                                  referencedColumnNames="id"
                                  referencedTableName="blood_group"/>
 
+        <addForeignKeyConstraint baseColumnNames="contact_id"
+                                 baseTableName="contact_contact_set"
+                                 constraintName="fk_contact_contact_set_contact_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="contact"/>
+        <addForeignKeyConstraint baseColumnNames="contact_set_id"
+                                 baseTableName="contact_contact_set"
+                                 constraintName="fk_contact_contact_set_contact_set_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="contact"/>
+        
     </changeSet>
 </databaseChangeLog>

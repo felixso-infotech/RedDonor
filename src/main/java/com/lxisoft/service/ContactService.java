@@ -28,7 +28,13 @@ public interface ContactService {
      */
     Page<ContactDTO> findAll(Pageable pageable);
 
-
+    /**
+     * Get all the Contact with eager load of many-to-many relationships.
+     *
+     * @return the list of entities
+     */
+    Page<ContactDTO> findAllWithEagerRelationships(Pageable pageable);
+    
     /**
      * Get the "id" contact.
      *

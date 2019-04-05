@@ -12,9 +12,12 @@ import com.lxisoft.web.rest.errors.ExceptionTranslator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -22,14 +25,17 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
 
 
 import static com.lxisoft.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -42,8 +48,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = RedDonorApp.class)
 public class ContactResourceIntTest {
 
-    private static final String DEFAULT_NAME = "AAAAAAAAAA";
-    private static final String UPDATED_NAME = "BBBBBBBBBB";
+    private static final String DEFAULT_DISPLAY_NAME = "AAAAAAAAAA";
+    private static final String UPDATED_DISPLAY_NAME = "BBBBBBBBBB";
 
     private static final Long DEFAULT_PHONE_NUMBER = 1L;
     private static final Long UPDATED_PHONE_NUMBER = 2L;
@@ -60,8 +66,14 @@ public class ContactResourceIntTest {
     @Autowired
     private ContactRepository contactRepository;
 
+    @Mock
+    private ContactRepository contactRepositoryMock;
+
     @Autowired
     private ContactMapper contactMapper;
+
+    @Mock
+    private ContactService contactServiceMock;
 
     @Autowired
     private ContactService contactService;
@@ -78,6 +90,9 @@ public class ContactResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restContactMockMvc;
 
     private Contact contact;
@@ -90,7 +105,8 @@ public class ContactResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -101,7 +117,7 @@ public class ContactResourceIntTest {
      */
     public static Contact createEntity(EntityManager em) {
         Contact contact = new Contact()
-            .name(DEFAULT_NAME)
+            .displayName(DEFAULT_DISPLAY_NAME)
             .phoneNumber(DEFAULT_PHONE_NUMBER)
             .email(DEFAULT_EMAIL)
             .age(DEFAULT_AGE)
@@ -130,7 +146,7 @@ public class ContactResourceIntTest {
         List<Contact> contactList = contactRepository.findAll();
         assertThat(contactList).hasSize(databaseSizeBeforeCreate + 1);
         Contact testContact = contactList.get(contactList.size() - 1);
-        assertThat(testContact.getName()).isEqualTo(DEFAULT_NAME);
+        assertThat(testContact.getDisplayName()).isEqualTo(DEFAULT_DISPLAY_NAME);
         assertThat(testContact.getPhoneNumber()).isEqualTo(DEFAULT_PHONE_NUMBER);
         assertThat(testContact.getEmail()).isEqualTo(DEFAULT_EMAIL);
         assertThat(testContact.getAge()).isEqualTo(DEFAULT_AGE);
@@ -168,13 +184,46 @@ public class ContactResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(contact.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
+            .andExpect(jsonPath("$.[*].displayName").value(hasItem(DEFAULT_DISPLAY_NAME.toString())))
             .andExpect(jsonPath("$.[*].phoneNumber").value(hasItem(DEFAULT_PHONE_NUMBER.intValue())))
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL.toString())))
             .andExpect(jsonPath("$.[*].age").value(hasItem(DEFAULT_AGE.intValue())))
             .andExpect(jsonPath("$.[*].isEligible").value(hasItem(DEFAULT_IS_ELIGIBLE.booleanValue())));
     }
     
+    @SuppressWarnings({"unchecked"})
+    public void getAllContactsWithEagerRelationshipsIsEnabled() throws Exception {
+        ContactResource contactResource = new ContactResource(contactServiceMock);
+        when(contactServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        MockMvc restContactMockMvc = MockMvcBuilders.standaloneSetup(contactResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restContactMockMvc.perform(get("/api/contacts?eagerload=true"))
+        .andExpect(status().isOk());
+
+        verify(contactServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public void getAllContactsWithEagerRelationshipsIsNotEnabled() throws Exception {
+        ContactResource contactResource = new ContactResource(contactServiceMock);
+            when(contactServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+            MockMvc restContactMockMvc = MockMvcBuilders.standaloneSetup(contactResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restContactMockMvc.perform(get("/api/contacts?eagerload=true"))
+        .andExpect(status().isOk());
+
+            verify(contactServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
     @Test
     @Transactional
     public void getContact() throws Exception {
@@ -186,7 +235,7 @@ public class ContactResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(contact.getId().intValue()))
-            .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
+            .andExpect(jsonPath("$.displayName").value(DEFAULT_DISPLAY_NAME.toString()))
             .andExpect(jsonPath("$.phoneNumber").value(DEFAULT_PHONE_NUMBER.intValue()))
             .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL.toString()))
             .andExpect(jsonPath("$.age").value(DEFAULT_AGE.intValue()))
@@ -214,7 +263,7 @@ public class ContactResourceIntTest {
         // Disconnect from session so that the updates on updatedContact are not directly saved in db
         em.detach(updatedContact);
         updatedContact
-            .name(UPDATED_NAME)
+            .displayName(UPDATED_DISPLAY_NAME)
             .phoneNumber(UPDATED_PHONE_NUMBER)
             .email(UPDATED_EMAIL)
             .age(UPDATED_AGE)
@@ -230,7 +279,7 @@ public class ContactResourceIntTest {
         List<Contact> contactList = contactRepository.findAll();
         assertThat(contactList).hasSize(databaseSizeBeforeUpdate);
         Contact testContact = contactList.get(contactList.size() - 1);
-        assertThat(testContact.getName()).isEqualTo(UPDATED_NAME);
+        assertThat(testContact.getDisplayName()).isEqualTo(UPDATED_DISPLAY_NAME);
         assertThat(testContact.getPhoneNumber()).isEqualTo(UPDATED_PHONE_NUMBER);
         assertThat(testContact.getEmail()).isEqualTo(UPDATED_EMAIL);
         assertThat(testContact.getAge()).isEqualTo(UPDATED_AGE);
@@ -264,7 +313,7 @@ public class ContactResourceIntTest {
 
         int databaseSizeBeforeDelete = contactRepository.findAll().size();
 
-        // Get the contact
+        // Delete the contact
         restContactMockMvc.perform(delete("/api/contacts/{id}", contact.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());

@@ -1,7 +1,11 @@
 package com.lxisoft.service.dto;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+
+import com.lxisoft.domain.Contact;
 
 /**
  * A DTO for the Contact entity.
@@ -25,6 +29,8 @@ public class ContactDTO implements Serializable {
     private Long contactId;
 
     private Long bloodGroupId;
+    
+    private Set<ContactDTO> contactSet = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -133,4 +139,18 @@ public class ContactDTO implements Serializable {
             ", bloodGroup=" + getBloodGroupId() +
             "}";
     }
+
+
+
+	public Boolean getIsEligible() {
+		return isEligible;
+	}
+
+	public Set<ContactDTO> getContactSet() {
+		return contactSet;
+	}
+
+	public void setContactSet(Set<ContactDTO> contactSet) {
+		this.contactSet = contactSet;
+	}
 }

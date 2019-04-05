@@ -17,7 +17,7 @@ import java.util.Objects;
  */
 @ApiModel(description = "Contact entity. @Author Anjali")
 @Entity
-@Table(name = "contact")
+@Table(name = "contact",uniqueConstraints={@UniqueConstraint(columnNames={"phone_number"})})
 public class Contact implements Serializable {
 
     private static final long serialVersionUID = 1L;

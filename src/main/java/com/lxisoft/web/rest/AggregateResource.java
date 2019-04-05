@@ -28,6 +28,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,6 +41,7 @@ import com.lxisoft.service.AddressService;
 import com.lxisoft.service.AggregateService;
 import com.lxisoft.service.ContactService;
 import com.lxisoft.service.dto.AddressDTO;
+import com.lxisoft.service.dto.BloodGroupDTO;
 import com.lxisoft.service.dto.ContactDTO;
 import com.lxisoft.web.rest.errors.BadRequestAlertException;
 import com.lxisoft.web.rest.util.HeaderUtil;
@@ -179,6 +181,37 @@ public class AggregateResource {
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/addresses");
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
+
+    /**
+     * GET  /blood-groups : get all the bloodGroups.
+     *
+     * @param pageable the pagination information
+     * @return the ResponseEntity with status 200 (OK) and the list of bloodGroups in body
+     */
+    @GetMapping("/blood-groups")
+    @Timed
+    public ResponseEntity<List<BloodGroupDTO>> getAllBloodGroups(Pageable pageable) {
+        log.debug("REST request to get a page of BloodGroups");
+        Page<BloodGroupDTO> page = aggregateService.findAll(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/blood-groups");
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * GET  /contacts/{id} : get all the approvalStatuses.
+     *
+     * @param pageable the pagination information
+     * @return the ResponseEntity with status 200 (OK) and the list of approvalStatuses in body
+     */
+    @GetMapping("/contacts/{phoneNumber}")
+    @Timed
+    public ResponseEntity<List<ContactDTO>> getAllContactsByPhoneNumber(Pageable pageable,@PathVariable Long phoneNumber) {
+        log.debug("REST request to get a page of contact by phone number");
+        Page<ContactDTO> page = aggregateService.findAllContactsByPhoneNumber(pageable,phoneNumber);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/phoneNumber");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
 
 
 

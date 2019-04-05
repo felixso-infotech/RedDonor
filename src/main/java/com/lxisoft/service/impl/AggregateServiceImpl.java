@@ -15,8 +15,11 @@
  */
 package com.lxisoft.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -24,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,11 +35,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.lxisoft.domain.Address;
 import com.lxisoft.domain.Contact;
 import com.lxisoft.repository.AddressRepository;
+import com.lxisoft.repository.BloodGroupRepository;
 import com.lxisoft.repository.ContactRepository;
 import com.lxisoft.service.AggregateService;
 import com.lxisoft.service.dto.AddressDTO;
+import com.lxisoft.service.dto.BloodGroupDTO;
 import com.lxisoft.service.dto.ContactDTO;
 import com.lxisoft.service.mapper.AddressMapper;
+import com.lxisoft.service.mapper.BloodGroupMapper;
 import com.lxisoft.service.mapper.ContactMapper;
 
 @Service
@@ -55,6 +62,12 @@ public class AggregateServiceImpl implements AggregateService {
 
 	@Autowired
     AddressMapper addressMapper;
+	
+	@Autowired
+	BloodGroupRepository bloodGroupRepository;
+	
+	@Autowired
+	BloodGroupMapper bloodGroupMapper;
 
     /**
      * Save a contact.
@@ -130,7 +143,44 @@ public class AggregateServiceImpl implements AggregateService {
             .collect(Collectors.toCollection(LinkedList::new));
     }
 
+    /**
+     * Get all the bloodGroups.
+     *
+     * @param pageable the pagination information
+     * @return the list of entities
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Page<BloodGroupDTO> findAll(Pageable pageable) {
+        log.debug("Request to get all BloodGroups");
+        return bloodGroupRepository.findAll(pageable)
+            .map(bloodGroupMapper::toDto);
+    }
 
 
+    /**
+     * Get all the contacts.
+     *
+     * @param pageable the pagination information
+     * @return the list of entities
+     */
+    public Page<ContactDTO> findAllContactsByPhoneNumber(Pageable pageable,Long phoneNumber){
+    	
+    	log.debug("Request to get all Contacts by phone number");
+    	List<ContactDTO> contactDtoList=new ArrayList<ContactDTO>();
+    	List<Contact> contacts=contactRepository.findAllContactsByPhoneNumber(pageable,phoneNumber).getContent();
+    	
+    	for(Contact c:contacts){
+    		for(Contact cl:c.getContacts()){
+    			contactDtoList.add(contactMapper.toDto(cl));
+    		}	
+    	}
+    	for(ContactDTO contactDto:contactDtoList){
+    		
+    		log.info("*********contactdto{}",contactDto.getName());
+    	}
+    	return new PageImpl<ContactDTO>(contactDtoList, pageable, contactDtoList.size());
+    }
+    
 	
 }

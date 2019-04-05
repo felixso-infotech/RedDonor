@@ -18,6 +18,7 @@ package com.lxisoft.service.impl;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -158,7 +159,7 @@ public class AggregateServiceImpl implements AggregateService {
 
    
       /**
-     * Get all the contacts.
+     * Get all the contactSets.
      *
      * @param pageable the pagination information
      * @return the list of entities
@@ -176,4 +177,18 @@ public class AggregateServiceImpl implements AggregateService {
         return page;
       }
     
+    
+    /**
+     * Get one contact by id.
+     *
+     * @param id the id of the entity
+     * @return the entity
+     */
+    @Override
+    @Transactional(readOnly = true)	
+	public Optional<Contact> findContactByPhoneNumber(Long phoneNumber) {	    
+	        log.debug("Request to get Contact : {}", phoneNumber);
+	        Optional<Contact> contact=contactRepository.findContactByPhoneNumber(phoneNumber);
+	        return contact;         
+	    }
 }

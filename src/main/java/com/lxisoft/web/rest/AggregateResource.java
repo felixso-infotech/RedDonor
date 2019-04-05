@@ -18,6 +18,7 @@ package com.lxisoft.web.rest;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
 import com.lxisoft.domain.Contact;
+import com.lxisoft.model.ProfileAggregate;
 import com.lxisoft.service.AddressService;
 import com.lxisoft.service.AggregateService;
 import com.lxisoft.service.BloodGroupService;
@@ -48,6 +50,8 @@ import com.lxisoft.service.dto.ContactDTO;
 import com.lxisoft.web.rest.errors.BadRequestAlertException;
 import com.lxisoft.web.rest.util.HeaderUtil;
 import com.lxisoft.web.rest.util.PaginationUtil;
+
+import io.github.jhipster.web.util.ResponseUtil;
 
 @RestController
 @RequestMapping("/api")
@@ -214,6 +218,37 @@ private final Logger log = LoggerFactory.getLogger(AggregateResource.class);
         Page<Contact> page = aggregateService.findContactSetsByPhoneNumber(pageable,phoneNumber);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/phoneNumber");
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+    
+    /**
+     * GET  /contacts/:phoneNumber : get the "phoneNumber" contact.
+     *
+     * @param id the id of the contactDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the contactDTO, or with status 404 (Not Found)
+     */
+    @GetMapping("/contacts/{phoneNumber}")
+    @Timed
+    public ResponseEntity<ProfileAggregate> getContactDetailsByPhoneNumber(@PathVariable Long phoneNumber) {
+        log.debug("REST request to get Contact : {}", phoneNumber);
+        
+        ProfileAggregate profileAggregate=new ProfileAggregate();
+        
+        Optional<Contact> contact = aggregateService.findContactByPhoneNumber(phoneNumber);
+        
+        Contact contactobj=contact.get();      
+        
+        profileAggregate.setDisplayName(contactobj.getDisplayName());
+        profileAggregate.setPhoneNumber(contactobj.getPhoneNumber());
+        profileAggregate.setAge(contactobj.getAge());
+        profileAggregate.setIsEligible(contactobj.isIsEligible());
+        profileAggregate.setBloodGroup(contactobj.getBloodGroup().getBloodGroup());
+        
+        profileAggregate.setLocation(contactobj.getAddress().getLocation());
+        profileAggregate.setCity(contactobj.getAddress().getCity());
+        profileAggregate.setState(contactobj.getAddress().getState());
+        profileAggregate.setZipCode(contactobj.getAddress().getZipCode());
+        
+        return ResponseUtil.wrapOrNotFound(Optional.of(profileAggregate));
     }
 
 }

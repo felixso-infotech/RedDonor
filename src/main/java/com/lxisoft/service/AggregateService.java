@@ -16,6 +16,7 @@
 package com.lxisoft.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -76,12 +77,21 @@ public interface AggregateService {
 
     
     /**
-     * Get all the contacts.
+     * Get all the contactSets.
      *
      * @param pageable the pagination information
      * @return the list of entities
      */
     Page<Contact> findContactSetsByPhoneNumber(Pageable pageable,Long phoneNumber);
+    
+    /**
+     * Get the "phoneNumber" contact.
+     *
+     * @param phoneNumber the id of the entity
+     * @return the entity
+     */
+
+	Optional<Contact> findContactByPhoneNumber(Long phoneNumber);
     
 
 }

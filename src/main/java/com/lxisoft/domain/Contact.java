@@ -49,7 +49,6 @@ public class Contact implements Serializable {
     private BloodGroup bloodGroup;
 
     @ManyToMany
-    @JsonIgnore
     @JoinTable(name = "contact_contact_set",
                joinColumns = @JoinColumn(name = "contacts_id", referencedColumnName = "id"),
                inverseJoinColumns = @JoinColumn(name = "contact_sets_id", referencedColumnName = "id"))

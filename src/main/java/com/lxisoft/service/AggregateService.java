@@ -74,13 +74,14 @@ public interface AggregateService {
      */
     Page<BloodGroupDTO> findAllBloodGroups(Pageable pageable);
 
+    
     /**
      * Get all the contacts.
      *
      * @param pageable the pagination information
      * @return the list of entities
      */
-    List<Contact> findAllContactSetsByPhoneNumber(Pageable pageable,Long phoneNumber);
+    Page<Contact> findContactSetsByPhoneNumber(Pageable pageable,Long phoneNumber);
     
 
 }

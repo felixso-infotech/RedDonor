@@ -15,8 +15,10 @@
  */
 package com.lxisoft.service.impl;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -24,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -153,18 +156,24 @@ public class AggregateServiceImpl implements AggregateService {
             .map(bloodGroupMapper::toDto);
     }
 
-    /**
+   
+      /**
      * Get all the contacts.
      *
      * @param pageable the pagination information
      * @return the list of entities
      */
-    public List<Contact> findAllContactSetsByPhoneNumber(Pageable pageable,Long phoneNumber){
-    	
-    	log.debug("Request to get all Contacts by phone number");
-    	
-    	return (List<Contact>) contactRepository.findAllContactSetsByPhoneNumber(pageable,phoneNumber).getContent();
-    	
+    public Page<Contact> findContactSetsByPhoneNumber(Pageable pageable,Long phoneNumber){
+        
+        log.debug("Request to get all Contacts by phone number");
+      
+        Contact contact=contactRepository.findContactSetsByPhoneNumber(phoneNumber).get();      
+        
+        List<Contact> contactList=new ArrayList<Contact>(contact.getContactSets());
+        
+        Page<Contact> page = new PageImpl<Contact>(contactList, pageable, contactList.size());
+        
+        return page;
       }
     
 }

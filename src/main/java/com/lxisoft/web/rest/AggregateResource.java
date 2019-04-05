@@ -200,21 +200,20 @@ private final Logger log = LoggerFactory.getLogger(AggregateResource.class);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
     
+   
     /**
      * GET  /contacts/{id} : get all the approvalStatuses.
      *
      * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and the list of approvalStatuses in body
      */
-    @GetMapping("/contacts/{phoneNumber}")
+    @GetMapping("/contacts/getContactSetByPhoneNumber/{phoneNumber}")
     @Timed
-    public List<Contact> getAllContactsByPhoneNumber(Pageable pageable,@PathVariable Long phoneNumber) {
+    public ResponseEntity<List<Contact>> getContactSetByPhoneNumber(Pageable pageable,@PathVariable Long phoneNumber) {
         log.debug("REST request to get a page of contact by phone number");
-        List<Contact> page = aggregateService.findAllContactSetsByPhoneNumber(pageable,phoneNumber);
-        //HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/phoneNumber");
-        return page;
+        Page<Contact> page = aggregateService.findContactSetsByPhoneNumber(pageable,phoneNumber);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/phoneNumber");
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
-
-
 
 }

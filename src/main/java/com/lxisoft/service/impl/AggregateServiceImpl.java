@@ -167,7 +167,7 @@ public class AggregateServiceImpl implements AggregateService {
         
         log.debug("Request to get all Contacts by phone number");
       
-        Contact contact=contactRepository.findContactSetsByPhoneNumber(phoneNumber).get();      
+        Contact contact=contactRepository.findContactByPhoneNumber(phoneNumber).get();      
         
         List<Contact> contactList=new ArrayList<Contact>(contact.getContactSets());
         

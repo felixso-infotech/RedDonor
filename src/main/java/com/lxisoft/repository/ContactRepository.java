@@ -27,4 +27,8 @@ public interface ContactRepository extends JpaRepository<Contact, Long> {
     @Query("select contact from Contact contact left join fetch contact.contactSets where contact.id =:id")
     Optional<Contact> findOneWithEagerRelationships(@Param("id") Long id);
 
+    Page<Contact> findAllContactSetsByPhoneNumber(Pageable pageable, Long phoneNumber);
+	
+	//Page<Contact> findAllContactsByContactId(Pageable pageable, Long contactId);
+	
 }

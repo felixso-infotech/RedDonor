@@ -153,5 +153,18 @@ public class AggregateServiceImpl implements AggregateService {
             .map(bloodGroupMapper::toDto);
     }
 
+    /**
+     * Get all the contacts.
+     *
+     * @param pageable the pagination information
+     * @return the list of entities
+     */
+    public List<Contact> findAllContactSetsByPhoneNumber(Pageable pageable,Long phoneNumber){
+    	
+    	log.debug("Request to get all Contacts by phone number");
+    	
+    	return (List<Contact>) contactRepository.findAllContactSetsByPhoneNumber(pageable,phoneNumber).getContent();
+    	
+      }
     
 }

@@ -1,5 +1,6 @@
 package com.lxisoft.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModel;
 
@@ -48,6 +49,7 @@ public class Contact implements Serializable {
     private BloodGroup bloodGroup;
 
     @ManyToMany
+    @JsonIgnore
     @JoinTable(name = "contact_contact_set",
                joinColumns = @JoinColumn(name = "contacts_id", referencedColumnName = "id"),
                inverseJoinColumns = @JoinColumn(name = "contact_sets_id", referencedColumnName = "id"))

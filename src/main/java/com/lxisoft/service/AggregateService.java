@@ -20,6 +20,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.lxisoft.domain.Contact;
 import com.lxisoft.service.dto.AddressDTO;
 import com.lxisoft.service.dto.BloodGroupDTO;
 import com.lxisoft.service.dto.ContactDTO;
@@ -73,5 +74,13 @@ public interface AggregateService {
      */
     Page<BloodGroupDTO> findAllBloodGroups(Pageable pageable);
 
+    /**
+     * Get all the contacts.
+     *
+     * @param pageable the pagination information
+     * @return the list of entities
+     */
+    List<Contact> findAllContactSetsByPhoneNumber(Pageable pageable,Long phoneNumber);
+    
 
 }

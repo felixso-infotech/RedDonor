@@ -67,8 +67,12 @@ public class ContactServiceImpl implements ContactService {
      *
      * @return the list of entities
      */
-    public Page<ContactDTO> findAllWithEagerRelationships(Pageable pageable) {
+/*    public Page<ContactDTO> findAllWithEagerRelationships(Pageable pageable) {
         return contactRepository.findAllWithEagerRelationships(pageable).map(contactMapper::toDto);
+    }*/
+    
+    public Page<ContactDTO> findAllWithEagerRelationships(Pageable pageable) {
+        return contactRepository.findAll(pageable).map(contactMapper::toDto);
     }
     
 

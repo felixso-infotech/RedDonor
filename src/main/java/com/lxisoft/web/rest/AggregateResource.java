@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
 import com.lxisoft.domain.Contact;
+import com.lxisoft.model.ContactAggregate;
 import com.lxisoft.model.ProfileAggregate;
 import com.lxisoft.service.AddressService;
 import com.lxisoft.service.AggregateService;
@@ -77,12 +78,13 @@ private final Logger log = LoggerFactory.getLogger(AggregateResource.class);
      */
     @PostMapping("/contacts")
     @Timed
-    public ResponseEntity<ContactDTO> createContact(@RequestBody ContactDTO contactDTO) throws URISyntaxException {
-        log.debug("REST request to save Contact : {}", contactDTO);
-        if (contactDTO.getId() != null) {
+    public ResponseEntity<Contact> createContact(@RequestBody ContactAggregate contactAggregate) throws URISyntaxException {
+        log.debug("REST request to save Contact : {}", contactAggregate);
+        if (contactAggregate.getId() != null) {
             throw new BadRequestAlertException("A new contact cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        ContactDTO result = aggregateService.saveContact(contactDTO);
+        Contact result = aggregateService.saveContact(contactAggregate);
+        
         return ResponseEntity.created(new URI("/api/contacts/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -96,20 +98,20 @@ private final Logger log = LoggerFactory.getLogger(AggregateResource.class);
      * or with status 400 (Bad Request) if the contactDTO is not valid,
      * or with status 500 (Internal Server Error) if the contactDTO couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
+     *//*
     @PutMapping("/contacts")
     @Timed
-    public ResponseEntity<ContactDTO> updateContact(@RequestBody ContactDTO contactDTO) throws URISyntaxException {
+    public ResponseEntity<Contact> updateContact(@RequestBody ContactDTO contactDTO) throws URISyntaxException {
         log.debug("REST request to update Contact : {}", contactDTO);
         if (contactDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        ContactDTO result = aggregateService.saveContact(contactDTO);
+        Contact result = aggregateService.saveContact(contactDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, contactDTO.getId().toString()))
             .body(result);
     }
-
+*/
     /**
      * GET  /contacts : get all the contacts.
      *
@@ -118,9 +120,9 @@ private final Logger log = LoggerFactory.getLogger(AggregateResource.class);
      */
     @GetMapping("/contacts")
     @Timed
-    public ResponseEntity<List<ContactDTO>> getAllContacts(Pageable pageable) {
+    public ResponseEntity<List<Contact>> getAllContacts(Pageable pageable) {
         log.debug("REST request to get a page of Contacts");
-        Page<ContactDTO> page = aggregateService.findAllContacts(pageable);
+        Page<Contact> page = aggregateService.findAllContacts(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/contacts");
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }

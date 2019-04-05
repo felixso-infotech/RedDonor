@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.lxisoft.domain.Contact;
+import com.lxisoft.model.ContactAggregate;
 import com.lxisoft.service.dto.AddressDTO;
 import com.lxisoft.service.dto.BloodGroupDTO;
 import com.lxisoft.service.dto.ContactDTO;
@@ -34,7 +35,7 @@ public interface AggregateService {
      * @param contactDTO the entity to save
      * @return the persisted entity
      */
-    ContactDTO saveContact(ContactDTO contactDTO);
+    Contact saveContact(ContactAggregate contactAggregate);
 
     /**
      * Get all the contacts.
@@ -42,7 +43,7 @@ public interface AggregateService {
      * @param pageable the pagination information
      * @return the list of entities
      */
-    Page<ContactDTO> findAllContacts(Pageable pageable);
+    Page<Contact> findAllContacts(Pageable pageable);
     
     /**
      * Save a address.

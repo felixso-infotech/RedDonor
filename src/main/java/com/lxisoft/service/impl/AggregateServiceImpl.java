@@ -16,6 +16,7 @@
 package com.lxisoft.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.lxisoft.domain.Address;
 import com.lxisoft.domain.Contact;
+import com.lxisoft.model.ContactAggregate;
 import com.lxisoft.repository.AddressRepository;
 import com.lxisoft.repository.BloodGroupRepository;
 import com.lxisoft.repository.ContactRepository;
@@ -76,12 +78,76 @@ public class AggregateServiceImpl implements AggregateService {
      * @return the persisted entity
      */
     @Override
-    public ContactDTO saveContact(ContactDTO contactDTO) {
-        log.debug("Request to save Contact : {}", contactDTO);
-
-        Contact contact = contactMapper.toEntity(contactDTO);
-        contact = contactRepository.save(contact);
-        return contactMapper.toDto(contact);
+    public Contact saveContact(ContactAggregate contactAggregate) {
+    	
+        log.debug("Request to save Contact : {}", contactAggregate);
+        
+        Contact contact=null;
+                
+        if((contactAggregate.getPhoneNumber()) != (contactRepository.findContactByPhoneNumber(contactAggregate.getPhoneNumber()).get().getPhoneNumber()))
+        {
+         		contact = new Contact();
+        		
+        		contact.setDisplayName(contactAggregate.getDisplayName());
+        		contact.setPhoneNumber(contactAggregate.getPhoneNumber());
+        		contact.setBloodGroup(contactAggregate.getBloodGroup());
+        		contact.setEmail(contactAggregate.getEmail());
+        		contact.setAge(contactAggregate.getAge());      		
+        		contact.setAddress(contactAggregate.getAddress()); 
+        		contact.setContactSets(contactAggregate.getContactSets());
+        		       		               
+        		    List<Contact> contactList=new ArrayList<Contact>(contactAggregate.getContactSets());
+        		          		    
+        		     for(int j=0;j>=contactList.size();j++)       		    	 
+        		     { 
+        		    	 
+        		     if(contactList.get(j).getPhoneNumber() != contactRepository.findContactByPhoneNumber(contactList.get(j).getPhoneNumber()).get().getPhoneNumber())
+        		                    	 
+        		           {
+        			         contact = new Contact();
+            		
+        			         contact.setDisplayName(contactList.get(j).getDisplayName());
+        			
+        			         contact.setPhoneNumber(contactList.get(j).getPhoneNumber());      			        
+             			    			
+        			         contact = contactRepository.save(contact);
+        		                    	
+        		           }
+        		      else
+        		           {
+        		        	   
+        		           System.out.print(contactList.get(j).getPhoneNumber()+"\t This PhnNo already exist and owner name is"+contactList.get(j).getDisplayName());
+        		           
+        		           contact= contactRepository.findContactByPhoneNumber(contactList.get(j).getPhoneNumber()).get();
+        		           
+        		            contact.setBloodGroup(contactAggregate.getBloodGroup());
+        	        		contact.setEmail(contactAggregate.getEmail());
+        	        		contact.setAge(contactAggregate.getAge());      		
+        	        		contact.setAddress(contactAggregate.getAddress()); 
+        	        		
+        	        		contact = contactRepository.save(contact);
+        		           
+        		           }
+        			
+        		      }                                 
+        		                             		
+                contact = contactRepository.save(contact);
+        	}
+        
+        else
+        {
+        	contact= contactRepository.findContactByPhoneNumber(contactAggregate.getPhoneNumber()).get();
+	           
+            contact.setBloodGroup(contactAggregate.getBloodGroup());
+    		contact.setEmail(contactAggregate.getEmail());
+    		contact.setAge(contactAggregate.getAge());      		
+    		contact.setAddress(contactAggregate.getAddress()); 
+    		    		
+    		contact = contactRepository.save(contact);
+        }
+        
+        
+        return contact;
     }
 
     /**
@@ -92,10 +158,10 @@ public class AggregateServiceImpl implements AggregateService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Page<ContactDTO> findAllContacts(Pageable pageable) {
+    public Page<Contact> findAllContacts(Pageable pageable) {
         log.debug("Request to get all Contacts");
-        return contactRepository.findAll(pageable)
-            .map(contactMapper::toDto);
+        return contactRepository.findAll(pageable);
+            
     }
 
     /**

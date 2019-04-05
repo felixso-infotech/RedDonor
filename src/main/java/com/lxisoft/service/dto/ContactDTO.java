@@ -1,7 +1,9 @@
 package com.lxisoft.service.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Objects;
 
@@ -27,8 +29,12 @@ public class ContactDTO implements Serializable {
     private Long bloodGroupId;
 
     private Set<ContactDTO> contactSets = new HashSet<>();
+    
+    private List<ContactDTO> phoneNumbers= new ArrayList<>();
 
-    public Long getId() {
+    
+
+	public Long getId() {
         return id;
     }
 
@@ -75,6 +81,18 @@ public class ContactDTO implements Serializable {
     public void setIsEligible(Boolean isEligible) {
         this.isEligible = isEligible;
     }
+    
+    public Boolean getIsEligible() {
+		return isEligible;
+	}
+    
+    public List<ContactDTO> getPhoneNumbers() {
+		return phoneNumbers;
+	}
+
+	public void setPhoneNumbers(List<ContactDTO> phoneNumbers) {
+		this.phoneNumbers = phoneNumbers;
+	}
 
     public Long getAddressId() {
         return addressId;

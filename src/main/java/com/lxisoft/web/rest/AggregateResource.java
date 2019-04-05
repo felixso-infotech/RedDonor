@@ -38,8 +38,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.codahale.metrics.annotation.Timed;
 import com.lxisoft.service.AddressService;
 import com.lxisoft.service.AggregateService;
+import com.lxisoft.service.BloodGroupService;
 import com.lxisoft.service.ContactService;
 import com.lxisoft.service.dto.AddressDTO;
+import com.lxisoft.service.dto.BloodGroupDTO;
 import com.lxisoft.service.dto.ContactDTO;
 import com.lxisoft.web.rest.errors.BadRequestAlertException;
 import com.lxisoft.web.rest.util.HeaderUtil;
@@ -58,7 +60,8 @@ private final Logger log = LoggerFactory.getLogger(AggregateResource.class);
 	
 	@Autowired
 	AddressService addressService;
-
+	
+	
     /**
      * POST  /contacts : Create a new contact.
      *
@@ -177,6 +180,21 @@ private final Logger log = LoggerFactory.getLogger(AggregateResource.class);
         log.debug("REST request to get a page of Addresses");
         Page<AddressDTO> page = addressService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/addresses");
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * GET  /blood-groups : get all the bloodGroups.
+     *
+     * @param pageable the pagination information
+     * @return the ResponseEntity with status 200 (OK) and the list of bloodGroups in body
+     */
+    @GetMapping("/blood-groups")
+    @Timed
+    public ResponseEntity<List<BloodGroupDTO>> getAllBloodGroups(Pageable pageable) {
+        log.debug("REST request to get a page of BloodGroups");
+        Page<BloodGroupDTO> page = aggregateService.findAllBloodGroups(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/blood-groups");
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 

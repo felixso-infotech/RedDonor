@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.lxisoft.service.dto.AddressDTO;
+import com.lxisoft.service.dto.BloodGroupDTO;
 import com.lxisoft.service.dto.ContactDTO;
 
 public interface AggregateService {
@@ -62,6 +63,15 @@ public interface AggregateService {
      * @return the list of entities
      */
     List<AddressDTO> findAllWhereContactIsNull();
+
+    
+    /**
+     * Get all the bloodGroups.
+     *
+     * @param pageable the pagination information
+     * @return the list of entities
+     */
+    Page<BloodGroupDTO> findAllBloodGroups(Pageable pageable);
 
 
 }

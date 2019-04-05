@@ -31,11 +31,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.lxisoft.domain.Address;
 import com.lxisoft.domain.Contact;
 import com.lxisoft.repository.AddressRepository;
+import com.lxisoft.repository.BloodGroupRepository;
 import com.lxisoft.repository.ContactRepository;
 import com.lxisoft.service.AggregateService;
 import com.lxisoft.service.dto.AddressDTO;
+import com.lxisoft.service.dto.BloodGroupDTO;
 import com.lxisoft.service.dto.ContactDTO;
 import com.lxisoft.service.mapper.AddressMapper;
+import com.lxisoft.service.mapper.BloodGroupMapper;
 import com.lxisoft.service.mapper.ContactMapper;
 
 @Service
@@ -55,6 +58,12 @@ public class AggregateServiceImpl implements AggregateService {
 
 	@Autowired
     AddressMapper addressMapper;
+
+	@Autowired
+	BloodGroupRepository bloodGroupRepository;
+	
+	@Autowired
+	BloodGroupMapper bloodGroupMapper;
 
     /**
      * Save a contact.
@@ -130,5 +139,19 @@ public class AggregateServiceImpl implements AggregateService {
             .collect(Collectors.toCollection(LinkedList::new));
     }
 
+    /**
+     * Get all the bloodGroups.
+     *
+     * @param pageable the pagination information
+     * @return the list of entities
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Page<BloodGroupDTO> findAllBloodGroups(Pageable pageable) {
+        log.debug("Request to get all BloodGroups");
+        return bloodGroupRepository.findAll(pageable)
+            .map(bloodGroupMapper::toDto);
+    }
 
+    
 }

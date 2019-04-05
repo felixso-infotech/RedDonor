@@ -76,21 +76,18 @@ DROP TABLE IF EXISTS `contact`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `contact` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
+  `display_name` varchar(255) DEFAULT NULL,
   `phone_number` bigint(20) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `age` bigint(20) DEFAULT NULL,
   `is_eligible` bit(1) DEFAULT NULL,
   `address_id` bigint(20) DEFAULT NULL,
-  `contact_id` bigint(20) DEFAULT NULL,
   `blood_group_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `ux_contact_address_id` (`address_id`),
-  KEY `fk_contact_contact_id` (`contact_id`),
   KEY `fk_contact_blood_group_id` (`blood_group_id`),
   CONSTRAINT `fk_contact_blood_group_id` FOREIGN KEY (`blood_group_id`) REFERENCES `blood_group` (`id`),
-  CONSTRAINT `fk_contact_address_id` FOREIGN KEY (`address_id`) REFERENCES `address` (`id`),
-  CONSTRAINT `fk_contact_contact_id` FOREIGN KEY (`contact_id`) REFERENCES `contact` (`id`)
+  CONSTRAINT `fk_contact_address_id` FOREIGN KEY (`address_id`) REFERENCES `address` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='Contact entity. @Author Anjali';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -100,8 +97,35 @@ CREATE TABLE `contact` (
 
 LOCK TABLES `contact` WRITE;
 /*!40000 ALTER TABLE `contact` DISABLE KEYS */;
-INSERT INTO `contact` VALUES (1,'anjali',9400410512,'anjali.chandran@lxisoft.com',25,'',1,NULL,1),(2,'sarangi',9995872261,'sarangibalu.a@lxisoft.com',26,'',2,NULL,5),(3,'sanil',9895843337,'sanilkumar.p@lxisoft.com',25,'',3,1,3),(4,'ruhail',8086990809,'muhammed.ruhail@lxisoft.com',26,'',4,1,3),(5,'neeraja',9809201496,'neeraja.m@lxisoft.com',24,'\0',5,2,7);
+INSERT INTO `contact` VALUES (1,'anjali',9400410512,'anjali.chandran@lxisoft.com',25,'',1,1),(2,'sarangi',9995872261,'sarangibalu.a@lxisoft.com',26,'',2,5),(3,'sanil',9895843337,'sanilkumar.p@lxisoft.com',25,'',3,3),(4,'ruhail',8086990809,'muhammed.ruhail@lxisoft.com',26,'',4,3),(5,'neeraja',9809201496,'neeraja.m@lxisoft.com',24,'\0',5,7);
 /*!40000 ALTER TABLE `contact` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `contact_contact_set`
+--
+
+DROP TABLE IF EXISTS `contact_contact_set`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `contact_contact_set` (
+  `contact_sets_id` bigint(20) NOT NULL,
+  `contacts_id` bigint(20) NOT NULL,
+  PRIMARY KEY (`contacts_id`,`contact_sets_id`),
+  KEY `fk_contact_contact_set_contact_sets_id` (`contact_sets_id`),
+  CONSTRAINT `fk_contact_contact_set_contact_sets_id` FOREIGN KEY (`contact_sets_id`) REFERENCES `contact` (`id`),
+  CONSTRAINT `fk_contact_contact_set_contacts_id` FOREIGN KEY (`contacts_id`) REFERENCES `contact` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `contact_contact_set`
+--
+
+LOCK TABLES `contact_contact_set` WRITE;
+/*!40000 ALTER TABLE `contact_contact_set` DISABLE KEYS */;
+INSERT INTO `contact_contact_set` VALUES (1,3),(1,4),(2,1),(2,3),(2,4),(3,1),(3,4),(4,1),(4,3),(5,3);
+/*!40000 ALTER TABLE `contact_contact_set` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -135,7 +159,7 @@ CREATE TABLE `databasechangelog` (
 
 LOCK TABLES `databasechangelog` WRITE;
 /*!40000 ALTER TABLE `databasechangelog` DISABLE KEYS */;
-INSERT INTO `databasechangelog` VALUES ('00000000000001','jhipster','config/liquibase/changelog/00000000000000_initial_schema.xml','2019-04-03 19:53:16',1,'EXECUTED','7:3628d21006c83bc696d51a75927e556f','createTable tableName=jhi_user; createTable tableName=jhi_authority; createTable tableName=jhi_user_authority; addPrimaryKey tableName=jhi_user_authority; addForeignKeyConstraint baseTableName=jhi_user_authority, constraintName=fk_authority_name, ...','',NULL,'3.5.4',NULL,NULL,'4301394467'),('20190403141559-1','jhipster','config/liquibase/changelog/20190403141559_added_entity_Contact.xml','2019-04-03 19:53:16',2,'EXECUTED','7:f19fcea21af6e26fd682db06d7322f31','createTable tableName=contact','',NULL,'3.5.4',NULL,NULL,'4301394467'),('20190403141600-1','jhipster','config/liquibase/changelog/20190403141600_added_entity_BloodGroup.xml','2019-04-03 19:53:16',3,'EXECUTED','7:36233d71a101ba688c92539c7c2c419e','createTable tableName=blood_group','',NULL,'3.5.4',NULL,NULL,'4301394467'),('20190403141601-1','jhipster','config/liquibase/changelog/20190403141601_added_entity_Address.xml','2019-04-03 19:53:17',4,'EXECUTED','7:a3880c446b952e1cc2da805b85fca241','createTable tableName=address','',NULL,'3.5.4',NULL,NULL,'4301394467'),('20190403141559-2','jhipster','config/liquibase/changelog/20190403141559_added_entity_constraints_Contact.xml','2019-04-03 19:53:17',5,'EXECUTED','7:8af0a0ead5f399c255c397bd8158b07f','addForeignKeyConstraint baseTableName=contact, constraintName=fk_contact_address_id, referencedTableName=address; addForeignKeyConstraint baseTableName=contact, constraintName=fk_contact_contact_id, referencedTableName=contact; addForeignKeyConstr...','',NULL,'3.5.4',NULL,NULL,'4301394467');
+INSERT INTO `databasechangelog` VALUES ('00000000000001','jhipster','config/liquibase/changelog/00000000000000_initial_schema.xml','2019-04-05 16:07:44',1,'EXECUTED','7:3628d21006c83bc696d51a75927e556f','createTable tableName=jhi_user; createTable tableName=jhi_authority; createTable tableName=jhi_user_authority; addPrimaryKey tableName=jhi_user_authority; addForeignKeyConstraint baseTableName=jhi_user_authority, constraintName=fk_authority_name, ...','',NULL,'3.5.4',NULL,NULL,'4460662542'),('20190405085512-1','jhipster','config/liquibase/changelog/20190405085512_added_entity_Contact.xml','2019-04-05 16:07:44',2,'EXECUTED','7:1e30b4681564b33ec5503becbfb86479','createTable tableName=contact; createTable tableName=contact_contact_set; addPrimaryKey tableName=contact_contact_set','',NULL,'3.5.4',NULL,NULL,'4460662542'),('20190405085513-1','jhipster','config/liquibase/changelog/20190405085513_added_entity_BloodGroup.xml','2019-04-05 16:07:45',3,'EXECUTED','7:36233d71a101ba688c92539c7c2c419e','createTable tableName=blood_group','',NULL,'3.5.4',NULL,NULL,'4460662542'),('20190405085514-1','jhipster','config/liquibase/changelog/20190405085514_added_entity_Address.xml','2019-04-05 16:07:45',4,'EXECUTED','7:a3880c446b952e1cc2da805b85fca241','createTable tableName=address','',NULL,'3.5.4',NULL,NULL,'4460662542'),('20190405085512-2','jhipster','config/liquibase/changelog/20190405085512_added_entity_constraints_Contact.xml','2019-04-05 16:07:46',5,'EXECUTED','7:b4ebdc032fdeae7ebf447858a1d77938','addForeignKeyConstraint baseTableName=contact, constraintName=fk_contact_address_id, referencedTableName=address; addForeignKeyConstraint baseTableName=contact, constraintName=fk_contact_blood_group_id, referencedTableName=blood_group; addForeignK...','',NULL,'3.5.4',NULL,NULL,'4460662542');
 /*!40000 ALTER TABLE `databasechangelog` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -309,4 +333,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-04-04 11:33:14
+-- Dump completed on 2019-04-05 16:27:04

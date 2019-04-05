@@ -1,26 +1,25 @@
- /*
- * Copyright 2002-2016 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+/*
+* Copyright 2002-2016 the original author or authors.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 package com.lxisoft.service.impl;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -42,7 +41,7 @@ import com.lxisoft.repository.ContactRepository;
 import com.lxisoft.service.AggregateService;
 import com.lxisoft.service.dto.AddressDTO;
 import com.lxisoft.service.dto.BloodGroupDTO;
-import com.lxisoft.service.dto.ContactDTO;
+
 import com.lxisoft.service.mapper.AddressMapper;
 import com.lxisoft.service.mapper.BloodGroupMapper;
 import com.lxisoft.service.mapper.ContactMapper;
@@ -50,24 +49,24 @@ import com.lxisoft.service.mapper.ContactMapper;
 @Service
 @Transactional
 public class AggregateServiceImpl implements AggregateService {
-	
+
 	private final Logger log = LoggerFactory.getLogger(AggregateServiceImpl.class);
 
 	@Autowired
 	ContactRepository contactRepository;
 
 	@Autowired
-    ContactMapper contactMapper;
-	
+	ContactMapper contactMapper;
+
 	@Autowired
 	AddressRepository addressRepository;
 
 	@Autowired
-    AddressMapper addressMapper;
+	AddressMapper addressMapper;
 
 	@Autowired
 	BloodGroupRepository bloodGroupRepository;
-	
+
 	@Autowired
 	BloodGroupMapper bloodGroupMapper;
 
@@ -257,4 +256,35 @@ public class AggregateServiceImpl implements AggregateService {
 	        Optional<Contact> contact=contactRepository.findContactByPhoneNumber(phoneNumber);
 	        return contact;         
 	    }
+	
+
+	
+
+	@Override
+	public List<Contact> findContactSetsOfContact(Long phoneNumber) {
+		return contactRepository.findContactSetsOfContact(phoneNumber);
+	}
+
+	@Override
+	public List<Contact> findContactsOfRegisteredPeople(Long phoneNumber) {
+		List<Contact> contacts = contactRepository.findContactSetsOfContact(phoneNumber);
+		List<Contact> registered = new ArrayList<Contact>();
+		contacts.forEach(c -> {
+			if (c.getBloodGroup() != null)
+				registered.add(c);
+		});
+		return registered;
+	}
+
+	@Override
+	public List<Contact> findContactSetsOfContactByBloodGroup(Long phoneNumber, String bloodGroup) {
+		List<Contact> contacts = contactRepository.findContactSetsOfContact(phoneNumber);
+		List<Contact> contactsByBloodGroup = new ArrayList<Contact>();
+		contacts.forEach(c -> {
+			if (c.getBloodGroup().getBloodGroup().equals(bloodGroup))
+				contactsByBloodGroup.add(c);
+		});
+		return contactsByBloodGroup;
+	}
+
 }

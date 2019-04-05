@@ -1,18 +1,18 @@
- /*
- * Copyright 2002-2016 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+/*
+* Copyright 2002-2016 the original author or authors.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 package com.lxisoft.web.rest;
 
 import java.net.URI;
@@ -43,11 +43,9 @@ import com.lxisoft.model.ContactAggregate;
 import com.lxisoft.model.ProfileAggregate;
 import com.lxisoft.service.AddressService;
 import com.lxisoft.service.AggregateService;
-import com.lxisoft.service.BloodGroupService;
-import com.lxisoft.service.ContactService;
 import com.lxisoft.service.dto.AddressDTO;
 import com.lxisoft.service.dto.BloodGroupDTO;
-import com.lxisoft.service.dto.ContactDTO;
+
 import com.lxisoft.web.rest.errors.BadRequestAlertException;
 import com.lxisoft.web.rest.util.HeaderUtil;
 import com.lxisoft.web.rest.util.PaginationUtil;
@@ -57,18 +55,17 @@ import io.github.jhipster.web.util.ResponseUtil;
 @RestController
 @RequestMapping("/api")
 public class AggregateResource {
-	
-private final Logger log = LoggerFactory.getLogger(AggregateResource.class);
-	
+
+	private final Logger log = LoggerFactory.getLogger(AggregateResource.class);
+
 	private static final String ENTITY_NAME = "redDonorContact";
 
 	@Autowired
 	AggregateService aggregateService;
-	
+
 	@Autowired
 	AddressService addressService;
-	
-	
+		
     /**
      * POST  /contacts : Create a new contact.
      *
@@ -252,5 +249,28 @@ private final Logger log = LoggerFactory.getLogger(AggregateResource.class);
         
         return ResponseUtil.wrapOrNotFound(Optional.of(profileAggregate));
     }
+
+	@GetMapping("/contactsOfContacts/{phoneNumber}")
+	@Timed
+	public List<Contact> findContactSetsOfContact(@PathVariable Long phoneNumber) {
+		List<Contact> contacts = aggregateService.findContactSetsOfContact(phoneNumber);
+		return contacts;
+	}
+
+	@GetMapping("/contactsOfRegisteredPeople/{phoneNumber}")
+	@Timed
+	public List<Contact> findContactsOfRegisteredPeople(@PathVariable Long phoneNumber) {
+		List<Contact> contacts = aggregateService.findContactsOfRegisteredPeople(phoneNumber);
+		return contacts;
+	}
+
+	@GetMapping("/contactsByPhoneNumberAndBloodGroup/{phoneNumber}/{bloodGroup}")
+	@Timed
+	public List<Contact> findContactSetsOfContactByBloodGroup(@PathVariable Long phoneNumber,
+			@PathVariable String bloodGroup) {
+		List<Contact> contacts = aggregateService.findContactSetsOfContactByBloodGroup(phoneNumber, bloodGroup);
+		return contacts;
+	}
+
 
 }

@@ -22,14 +22,74 @@ public class ContactAggregate {
     private Boolean isEligible;
     
     private Address address;
+    
+    private String location;
 
+    private Long houseNumber;
+
+    private String city;
+
+    private String state;
+
+    private Long zipCode;
+
+    private Long bloodGroupId;
+    
     private BloodGroup bloodGroup;
     
     private Set<Contact> contactSets = new HashSet<>();
 
 	
     
-    public Long getId() {
+    public Long getBloodGroupId() {
+		return bloodGroupId;
+	}
+
+	public void setBloodGroupId(Long bloodGroupId) {
+		this.bloodGroupId = bloodGroupId;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public Long getHouseNumber() {
+		return houseNumber;
+	}
+
+	public void setHouseNumber(Long houseNumber) {
+		this.houseNumber = houseNumber;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public Long getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(Long zipCode) {
+		this.zipCode = zipCode;
+	}
+
+	public Long getId() {
 		return id;
 	}
 

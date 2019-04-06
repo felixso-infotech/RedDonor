@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lxisoft.domain.Address;
+import com.lxisoft.domain.BloodGroup;
 import com.lxisoft.domain.Contact;
 import com.lxisoft.model.ContactAggregate;
 import com.lxisoft.repository.AddressRepository;
@@ -82,6 +83,9 @@ public class AggregateServiceImpl implements AggregateService {
         log.debug("Request to save Contact : {}", contactAggregate);
         
         Contact contact=null;
+        
+        Address address=null;
+        
                 
         if((contactAggregate.getPhoneNumber()) != (contactRepository.findContactByPhoneNumber(contactAggregate.getPhoneNumber()).get().getPhoneNumber()))
         {
@@ -89,47 +93,25 @@ public class AggregateServiceImpl implements AggregateService {
         		
         		contact.setDisplayName(contactAggregate.getDisplayName());
         		contact.setPhoneNumber(contactAggregate.getPhoneNumber());
-        		contact.setBloodGroup(contactAggregate.getBloodGroup());
+        		       		
+        		contact.setBloodGroup(bloodGroupRepository.findById(contactAggregate.getBloodGroupId()).get());
+        		
         		contact.setEmail(contactAggregate.getEmail());
-        		contact.setAge(contactAggregate.getAge());      		
-        		contact.setAddress(contactAggregate.getAddress()); 
-        		contact.setContactSets(contactAggregate.getContactSets());
-        		       		               
-        		    List<Contact> contactList=new ArrayList<Contact>(contactAggregate.getContactSets());
-        		          		    
-        		     for(int j=0;j>=contactList.size();j++)       		    	 
-        		     { 
-        		    	 
-        		     if(contactList.get(j).getPhoneNumber() != contactRepository.findContactByPhoneNumber(contactList.get(j).getPhoneNumber()).get().getPhoneNumber())
-        		                    	 
-        		           {
-        			         contact = new Contact();
-            		
-        			         contact.setDisplayName(contactList.get(j).getDisplayName());
-        			
-        			         contact.setPhoneNumber(contactList.get(j).getPhoneNumber());      			        
-             			    			
-        			         contact = contactRepository.save(contact);
-        		                    	
-        		           }
-        		      else
-        		           {
-        		        	   
-        		           System.out.print(contactList.get(j).getPhoneNumber()+"\t This PhnNo already exist and owner name is"+contactList.get(j).getDisplayName());
-        		           
-        		           contact= contactRepository.findContactByPhoneNumber(contactList.get(j).getPhoneNumber()).get();
-        		           
-        		            contact.setBloodGroup(contactAggregate.getBloodGroup());
-        	        		contact.setEmail(contactAggregate.getEmail());
-        	        		contact.setAge(contactAggregate.getAge());      		
-        	        		contact.setAddress(contactAggregate.getAddress()); 
-        	        		
-        	        		contact = contactRepository.save(contact);
-        		           
-        		           }
-        			
-        		      }                                 
-        		                             		
+        		contact.setAge(contactAggregate.getAge());  
+        	
+        		
+        		address=new Address();
+        		
+        		address.setLocation(contactAggregate.getLocation());
+        		address.setHouseNumber(contactAggregate.getHouseNumber());
+        		address.setCity(contactAggregate.getCity());
+        		address.setState(contactAggregate.getState());
+        		address.setZipCode(contactAggregate.getZipCode());
+        		
+        		
+        		contact.setAddress(addressRepository.save(address));
+        		        		
+        				                             		
                 contact = contactRepository.save(contact);
         	}
         
@@ -137,10 +119,22 @@ public class AggregateServiceImpl implements AggregateService {
         {
         	contact= contactRepository.findContactByPhoneNumber(contactAggregate.getPhoneNumber()).get();
 	           
-            contact.setBloodGroup(contactAggregate.getBloodGroup());
+        	contact.setBloodGroup(bloodGroupRepository.findById(contactAggregate.getBloodGroupId()).get());
+        	
     		contact.setEmail(contactAggregate.getEmail());
-    		contact.setAge(contactAggregate.getAge());      		
-    		contact.setAddress(contactAggregate.getAddress()); 
+    		contact.setAge(contactAggregate.getAge());  
+    		
+    		address=new Address();
+    		
+    		address.setLocation(contactAggregate.getLocation());
+    		address.setHouseNumber(contactAggregate.getHouseNumber());
+    		address.setCity(contactAggregate.getCity());
+    		address.setState(contactAggregate.getState());
+    		address.setZipCode(contactAggregate.getZipCode());
+    		
+    		
+    		contact.setAddress(addressRepository.save(address));
+    		
     		    		
     		contact = contactRepository.save(contact);
         }

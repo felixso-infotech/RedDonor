@@ -73,7 +73,7 @@ public class AggregateResource {
      * @return the ResponseEntity with status 201 (Created) and with body the new contactDTO, or with status 400 (Bad Request) if the contact has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
-    @PostMapping("/contacts")
+    @PostMapping("/contacts/createContact")
     @Timed
     public ResponseEntity<Contact> createContact(@RequestBody ContactAggregate contactAggregate) throws URISyntaxException {
         log.debug("REST request to save Contact : {}", contactAggregate);

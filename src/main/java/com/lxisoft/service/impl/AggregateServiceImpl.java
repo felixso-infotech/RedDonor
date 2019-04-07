@@ -75,7 +75,7 @@ public class AggregateServiceImpl implements AggregateService {
     /**
      * Save a contact.
      *
-     * @param contactDTO the entity to save
+     * @param contactAggregate the entity to save
      * @return the persisted entity
      */
     @Override
@@ -169,9 +169,9 @@ public class AggregateServiceImpl implements AggregateService {
     
     
     /**
-     * Save a contact.
+     * Save a contactSet.
      *
-     * @param contactDTO the entity to save
+     * @param contactAggregate the entity to save
      * @return the persisted entity
      */
     @Override
@@ -228,6 +228,27 @@ public class AggregateServiceImpl implements AggregateService {
        return contact1;
     }
    
+    /**
+     * Save a contact eligibility.
+     *
+     * @param contactAggregate the entity to save
+     * @return the persisted entity
+     */
+    
+    @Override
+	public Contact updateContactIsEligible(ContactAggregate contactAggregate) {
+    	
+    	log.debug("Request to save ContactIsEligible : {}", contactAggregate);
+    	
+    	Contact contact= contactRepository.findContactByPhoneNumber(contactAggregate.getPhoneNumber()).get();
+    	
+    	contact.setIsEligible(contactAggregate.getIsEligible());
+    	
+    	contact = contactRepository.save(contact);
+    	   	
+    	return contact;
+	}
+
     
     /**
      * Get all the contacts.
@@ -242,37 +263,6 @@ public class AggregateServiceImpl implements AggregateService {
         return contactRepository.findAll(pageable);
             
     }
-
-    /**
-     * Save a address.
-     *
-     * @param addressDTO the entity to save
-     * @return the persisted entity
-     */
-    @Override
-    public AddressDTO saveAddress(AddressDTO addressDTO) {
-        log.debug("Request to save Address : {}", addressDTO);
-
-        Address address = addressMapper.toEntity(addressDTO);
-        address = addressRepository.save(address);
-        return addressMapper.toDto(address);
-    }
-
-    /**
-     * Get all the addresses.
-     *
-     * @param pageable the pagination information
-     * @return the list of entities
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public Page<AddressDTO> findAllAddress(Pageable pageable) {
-        log.debug("Request to get all Addresses");
-        return addressRepository.findAll(pageable)
-            .map(addressMapper::toDto);
-    }
-
-
 
     /**
      *  get all the addresses where Contact is null.
@@ -367,4 +357,7 @@ public class AggregateServiceImpl implements AggregateService {
 		return contactsByBloodGroup;
 	}
 
+
+
+	
 }

@@ -32,7 +32,7 @@ public interface AggregateService {
 	 /**
      * Save a contact.
      *
-     * @param contactDTO the entity to save
+     * @param contactAggregate the entity to save
      * @return the persisted entity
      */
     Contact saveContact(ContactAggregate contactAggregate);
@@ -40,11 +40,21 @@ public interface AggregateService {
     /**
      * Save a contactSet.
      *
-     * @param contactDTO the entity to save
+     * @param contactAggregate the entity to save
      * @return the persisted entity
      */
     
     Contact saveContactsetByPhoneNumber(ContactAggregate contactAggregate);
+    
+    /**
+     * Save a contact eligibility.
+     *
+     * @param contactAggregate the entity to save
+     * @return the persisted entity
+     */
+    
+    Contact updateContactIsEligible(ContactAggregate contactAggregate);
+
 
     /**
      * Get all the contacts.
@@ -54,21 +64,7 @@ public interface AggregateService {
      */
     Page<Contact> findAllContacts(Pageable pageable);
     
-    /**
-     * Save a address.
-     *
-     * @param addressDTO the entity to save
-     * @return the persisted entity
-     */
-    AddressDTO saveAddress(AddressDTO addressDTO);
-
-    /**
-     * Get all the addresses.
-     *
-     * @param pageable the pagination information
-     * @return the list of entities
-     */
-    Page<AddressDTO> findAllAddress(Pageable pageable);
+    
     /**
      * Get all the AddressDTO where Contact is null.
      *
@@ -109,4 +105,5 @@ public interface AggregateService {
 
 	List<Contact> findContactSetsOfContactByBloodGroup(Long phoneNumber, String bloodGroup);
 
+	
 }

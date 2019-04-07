@@ -45,7 +45,7 @@ import com.lxisoft.service.AddressService;
 import com.lxisoft.service.AggregateService;
 import com.lxisoft.service.dto.AddressDTO;
 import com.lxisoft.service.dto.BloodGroupDTO;
-
+import com.lxisoft.service.dto.ContactDTO;
 import com.lxisoft.web.rest.errors.BadRequestAlertException;
 import com.lxisoft.web.rest.util.HeaderUtil;
 import com.lxisoft.web.rest.util.PaginationUtil;
@@ -67,9 +67,9 @@ public class AggregateResource {
 	AddressService addressService;
 		
     /**
-     * POST  /contacts : Create a new contact.
+     * POST  /contacts/createContact : Create a new contact.
      *
-     * @param contactDTO the contactDTO to create
+     * @param contactAggregate the contactAggregate to create
      * @return the ResponseEntity with status 201 (Created) and with body the new contactDTO, or with status 400 (Bad Request) if the contact has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
@@ -88,9 +88,9 @@ public class AggregateResource {
     }
 
     /**
-     * POST  /contacts : Create a new contact.
+     * POST  /contacts/createContactSet : Create contactset.
      *
-     * @param contactDTO the contactDTO to create
+     * @param contactAggregate the contactAggregate to create
      * @return the ResponseEntity with status 201 (Created) and with body the new contactDTO, or with status 400 (Bad Request) if the contact has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
@@ -107,30 +107,31 @@ public class AggregateResource {
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
-       
-    
+     
     /**
-     * PUT  /contacts : Updates an existing contact.
+     * POST  /contacts/updateContactIsEligible : Updates an existing contact.
      *
-     * @param contactDTO the contactDTO to update
+     * @param contactAggregate the contactAggregate to update
      * @return the ResponseEntity with status 200 (OK) and with body the updated contactDTO,
      * or with status 400 (Bad Request) if the contactDTO is not valid,
      * or with status 500 (Internal Server Error) if the contactDTO couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
-     *//*
-    @PutMapping("/contacts")
+     */
+    @PostMapping("/contacts/updateContactIsEligible")
     @Timed
-    public ResponseEntity<Contact> updateContact(@RequestBody ContactDTO contactDTO) throws URISyntaxException {
-        log.debug("REST request to update Contact : {}", contactDTO);
-        if (contactDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+    public ResponseEntity<Contact> updateContactIsEligible(@RequestBody ContactAggregate contactAggregate) throws URISyntaxException {
+        log.debug("REST request to update Contact : {}", contactAggregate);        
+        if (contactAggregate.getId() != null) {
+            throw new BadRequestAlertException("A new contact cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Contact result = aggregateService.saveContact(contactDTO);
+        Contact result = aggregateService.updateContactIsEligible(contactAggregate);
+        
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, contactDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
-*/
+    
+   
     /**
      * GET  /contacts : get all the contacts.
      *
@@ -143,70 +144,6 @@ public class AggregateResource {
         log.debug("REST request to get a page of Contacts");
         Page<Contact> page = aggregateService.findAllContacts(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/contacts");
-        return ResponseEntity.ok().headers(headers).body(page.getContent());
-    }
-
-
-    /**
-     * POST  /addresses : Create a new address.
-     *
-     * @param addressDTO the addressDTO to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new addressDTO, or with status 400 (Bad Request) if the address has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-    @PostMapping("/addresses")
-    @Timed
-    public ResponseEntity<AddressDTO> createAddress(@RequestBody AddressDTO addressDTO) throws URISyntaxException {
-        log.debug("REST request to save Address : {}", addressDTO);
-        if (addressDTO.getId() != null) {
-            throw new BadRequestAlertException("A new address cannot already have an ID", ENTITY_NAME, "idexists");
-        }
-        AddressDTO result = addressService.save(addressDTO);
-        return ResponseEntity.created(new URI("/api/addresses/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-            .body(result);
-    }
-
-    /**
-     * PUT  /addresses : Updates an existing address.
-     *
-     * @param addressDTO the addressDTO to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated addressDTO,
-     * or with status 400 (Bad Request) if the addressDTO is not valid,
-     * or with status 500 (Internal Server Error) if the addressDTO couldn't be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-    @PutMapping("/addresses")
-    @Timed
-    public ResponseEntity<AddressDTO> updateAddress(@RequestBody AddressDTO addressDTO) throws URISyntaxException {
-        log.debug("REST request to update Address : {}", addressDTO);
-        if (addressDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
-        }
-        AddressDTO result = addressService.save(addressDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, addressDTO.getId().toString()))
-            .body(result);
-    }
-
-    /**
-     * GET  /addresses : get all the addresses.
-     *
-     * @param pageable the pagination information
-     * @param filter the filter of the request
-     * @return the ResponseEntity with status 200 (OK) and the list of addresses in body
-     */
-    @GetMapping("/addresses")
-    @Timed
-    public ResponseEntity<List<AddressDTO>> getAllAddresses(Pageable pageable, @RequestParam(required = false) String filter) {
-        if ("contact-is-null".equals(filter)) {
-            log.debug("REST request to get all Addresss where contact is null");
-            return new ResponseEntity<>(addressService.findAllWhereContactIsNull(),
-                    HttpStatus.OK);
-        }
-        log.debug("REST request to get a page of Addresses");
-        Page<AddressDTO> page = addressService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/addresses");
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 

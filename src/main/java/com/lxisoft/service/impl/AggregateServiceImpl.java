@@ -16,10 +16,11 @@
 package com.lxisoft.service.impl;
 
 import java.util.ArrayList;
-
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -86,9 +87,11 @@ public class AggregateServiceImpl implements AggregateService {
         
         Address address=null;
         
-                
-        if((contactAggregate.getPhoneNumber()) != (contactRepository.findContactByPhoneNumber(contactAggregate.getPhoneNumber()).get().getPhoneNumber()))
+        //System.out.println("_____________________________________________"+contactRepository.findContactByPhoneNumber(contactAggregate.getPhoneNumber()).orElse(null));
+        
+        if(contactRepository.findContactByPhoneNumber(contactAggregate.getPhoneNumber()).orElse(null) == null)
         {
+                      
          		contact = new Contact();
         		
         		contact.setDisplayName(contactAggregate.getDisplayName());
@@ -98,7 +101,7 @@ public class AggregateServiceImpl implements AggregateService {
         		
         		contact.setEmail(contactAggregate.getEmail());
         		contact.setAge(contactAggregate.getAge());  
-        	
+        		contact.setIsEligible(contactAggregate.getIsEligible());
         		
         		address=new Address();
         		
@@ -117,19 +120,38 @@ public class AggregateServiceImpl implements AggregateService {
         
         else
         {
-        	contact= contactRepository.findContactByPhoneNumber(contactAggregate.getPhoneNumber()).get();
-	           
-        	contact.setBloodGroup(bloodGroupRepository.findById(contactAggregate.getBloodGroupId()).get());
+        	contact= contactRepository.findContactByPhoneNumber(contactAggregate.getPhoneNumber()).orElse(null);
         	
+        	System.out.println("****************************************************"+contact);
+        	
+        	if(contact.getBloodGroup()==null)        	
+	           contact.setBloodGroup(bloodGroupRepository.findById(contactAggregate.getBloodGroupId()).get());
+        	
+        	if(contact.getEmail()==null)
     		contact.setEmail(contactAggregate.getEmail());
-    		contact.setAge(contactAggregate.getAge());  
+        	
+        	if(contact.getAge()==null)
+    		contact.setAge(contactAggregate.getAge());
+        	
+        	if(contact.isIsEligible()==null)
+    		contact.setIsEligible(contactAggregate.getIsEligible());
     		
-    		address=new Address();
     		
+    	    address=addressRepository.findById(contact.getAddress().getId()).orElse(null);
+    		
+    		if(address.getLocation()==null)
     		address.setLocation(contactAggregate.getLocation());
+    		
+    		if(address.getHouseNumber()==null)
     		address.setHouseNumber(contactAggregate.getHouseNumber());
+    		
+    		if(address.getCity()==null)
     		address.setCity(contactAggregate.getCity());
+    		
+    		if(address.getState()==null)
     		address.setState(contactAggregate.getState());
+    		
+    		if(address.getZipCode()==null)
     		address.setZipCode(contactAggregate.getZipCode());
     		
     		
@@ -138,11 +160,87 @@ public class AggregateServiceImpl implements AggregateService {
     		    		
     		contact = contactRepository.save(contact);
         }
+       
         
         
         return contact;
     }
 
+    
+    
+   /* *//**
+     * Save a contact.
+     *
+     * @param contactDTO the entity to save
+     * @return the persisted entity
+     *//*
+    @Override
+    public Contact saveContactsetByPhoneNumber(ContactAggregate contactAggregate) {
+    	
+        log.debug("Request to save ContactSetByPhnNo : {}", contactAggregate);
+        
+        Contact contact=null;
+        
+        Set<Contact> set=new HashSet<Contact>();
+        
+        Contact contact1= contactRepository.findContactByPhoneNumber(contactAggregate.getPhoneNumber()).get();
+    
+        List<Contact> contactList=new ArrayList<Contact>(contactAggregate.getContactSets());
+        
+        System.out.println("*********************contactList**********************"+contactList);
+        
+        for(int j=0;j<contactList.size();j++)       		    	 
+	     {
+         
+        System.out.print("*******************************"+contactRepository.findContactByPhoneNumber(contactList.get(j).getPhoneNumber()));	
+        	
+        if(contactRepository.findContactByPhoneNumber(contactList.get(j).getPhoneNumber()).orElse(null)!=null)	
+        	
+        { 	
+	    
+         System.out.println("==========================================================================="); 
+        	
+	     if((contactList.get(j).getPhoneNumber()) != (contactRepository.findContactByPhoneNumber(contactList.get(j).getPhoneNumber()).orElse(null).getPhoneNumber()))
+	                    	 
+	           {
+		         contact = new Contact();
+		
+		         contact.setDisplayName(contactList.get(j).getDisplayName());
+		
+		         contact.setPhoneNumber(contactList.get(j).getPhoneNumber());      			        
+			    			
+		         contact = contactRepository.save(contact);
+		         
+		         System.out.println("-----------------------------------contact-------------------------------"+contact);
+		         
+		         set.add(contact);
+	                    	
+	           }
+        
+	      
+              else
+        	
+               {	
+        	              //contactRepository.findContactByPhoneNumber(contactList.get(j).getPhoneNumber()).get();
+        	
+        	              set.add(contactRepository.findContactByPhoneNumber(contactList.get(j).getPhoneNumber()).orElse(null));
+        	
+               } 
+	     
+            }
+	     
+	     System.out.println("*******************set************************"+set);
+	     
+	     contact1.setContactSets(set); 
+	     
+	     System.out.println("*******************contactset************************"+contact1.getContactSets());
+	     
+	     }       
+        
+       return contact1;
+    }
+    */
+    
     /**
      * Get all the contacts.
      *

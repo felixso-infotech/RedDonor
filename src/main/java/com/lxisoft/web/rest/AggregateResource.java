@@ -88,6 +88,28 @@ public class AggregateResource {
     }
 
     /**
+     * POST  /contacts : Create a new contact.
+     *
+     * @param contactDTO the contactDTO to create
+     * @return the ResponseEntity with status 201 (Created) and with body the new contactDTO, or with status 400 (Bad Request) if the contact has already an ID
+     * @throws URISyntaxException if the Location URI syntax is incorrect
+     */
+    @PostMapping("/contacts/createContactSet")
+    @Timed
+    public ResponseEntity<Contact> createContactSet(@RequestBody ContactAggregate contactAggregate) throws URISyntaxException {
+        log.debug("REST request to save Contact : {}", contactAggregate);
+        if (contactAggregate.getId() != null) {
+            throw new BadRequestAlertException("A new contact cannot already have an ID", ENTITY_NAME, "idexists");
+        }
+        Contact result = aggregateService.saveContactsetByPhoneNumber(contactAggregate);
+        
+        return ResponseEntity.created(new URI("/api/contacts/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+       
+    
+    /**
      * PUT  /contacts : Updates an existing contact.
      *
      * @param contactDTO the contactDTO to update

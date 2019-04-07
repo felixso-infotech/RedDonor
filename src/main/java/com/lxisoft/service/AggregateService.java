@@ -36,6 +36,15 @@ public interface AggregateService {
      * @return the persisted entity
      */
     Contact saveContact(ContactAggregate contactAggregate);
+    
+    /**
+     * Save a contactSet.
+     *
+     * @param contactDTO the entity to save
+     * @return the persisted entity
+     */
+    
+    Contact saveContactsetByPhoneNumber(ContactAggregate contactAggregate);
 
     /**
      * Get all the contacts.

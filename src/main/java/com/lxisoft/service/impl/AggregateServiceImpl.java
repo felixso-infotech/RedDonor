@@ -168,12 +168,12 @@ public class AggregateServiceImpl implements AggregateService {
 
     
     
-   /* *//**
+    /**
      * Save a contact.
      *
      * @param contactDTO the entity to save
      * @return the persisted entity
-     *//*
+     */
     @Override
     public Contact saveContactsetByPhoneNumber(ContactAggregate contactAggregate) {
     	
@@ -187,23 +187,18 @@ public class AggregateServiceImpl implements AggregateService {
     
         List<Contact> contactList=new ArrayList<Contact>(contactAggregate.getContactSets());
         
-        System.out.println("*********************contactList**********************"+contactList);
+        //System.out.println("*********************contactList**********************"+contactList);
         
         for(int j=0;j<contactList.size();j++)       		    	 
 	     {
          
-        System.out.print("*******************************"+contactRepository.findContactByPhoneNumber(contactList.get(j).getPhoneNumber()));	
+            //System.out.print("*******************************"+contactRepository.findContactByPhoneNumber(contactList.get(j).getPhoneNumber()));	
         	
-        if(contactRepository.findContactByPhoneNumber(contactList.get(j).getPhoneNumber()).orElse(null)!=null)	
+            if(contactRepository.findContactByPhoneNumber(contactList.get(j).getPhoneNumber()).orElse(null) == null)	
         	
-        { 	
-	    
-         System.out.println("==========================================================================="); 
-        	
-	     if((contactList.get(j).getPhoneNumber()) != (contactRepository.findContactByPhoneNumber(contactList.get(j).getPhoneNumber()).orElse(null).getPhoneNumber()))
-	                    	 
-	           {
-		         contact = new Contact();
+              { 	
+	          	
+	 	         contact = new Contact();
 		
 		         contact.setDisplayName(contactList.get(j).getDisplayName());
 		
@@ -211,35 +206,28 @@ public class AggregateServiceImpl implements AggregateService {
 			    			
 		         contact = contactRepository.save(contact);
 		         
-		         System.out.println("-----------------------------------contact-------------------------------"+contact);
+		        // System.out.println("-----------------------------------contact-------------------------------"+contact);
 		         
 		         set.add(contact);
 	                    	
 	           }
         
-	      
-              else
+             else
         	
-               {	
-        	              //contactRepository.findContactByPhoneNumber(contactList.get(j).getPhoneNumber()).get();
-        	
-        	              set.add(contactRepository.findContactByPhoneNumber(contactList.get(j).getPhoneNumber()).orElse(null));
-        	
-               } 
+        	       set.add(contactRepository.findContactByPhoneNumber(contactList.get(j).getPhoneNumber()).orElse(null));               
 	     
-            }
+	     }  
 	     
-	     System.out.println("*******************set************************"+set);
+	     //System.out.println("*******************set************************"+set);
 	     
 	     contact1.setContactSets(set); 
 	     
-	     System.out.println("*******************contactset************************"+contact1.getContactSets());
+	     //System.out.println("*******************contactset************************"+contact1.getContactSets());
 	     
-	     }       
-        
+	                
        return contact1;
     }
-    */
+   
     
     /**
      * Get all the contacts.

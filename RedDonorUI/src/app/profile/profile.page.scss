@@ -1,0 +1,39 @@
+ion-toggle {
+    font-size: 400px;
+    vertical-align: middle;
+}
+ion-title {
+    padding-bottom: 10px;
+    margin-right:35px; 
+}
+ion-content {
+    vertical-align: middle;
+    height: 100%;
+    text-align: center;
+}
+span {
+    margin-top: -15px;
+    text-align: right;
+    padding-top: 10px;
+    position: absolute;
+    right:-20px;
+}
+span ionic-icon {
+    margin-left: 5px;
+    margin-top: -15px;
+    text-align: right;
+}
+.profile {
+    background-color: #330d0c;
+    color: #fff;
+}
+.quote {
+    font-size: 20px;
+    vertical-align: middle;
+    margin-top: 30%;
+    color: #ff4477;
+    vertical-align: middle;
+    height: 100%;
+    text-align: center;
+    padding: 20px;
+}

@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-toolbar color="blood">
+    <ion-title class="ion-float-right">{{profile?.displayName}}<span><ion-icon name="contact" size="large"></ion-icon></span></ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+<div class="profile" *ngIf="profile">
+  <ion-grid>
+    <ion-row align-items-center>
+      <ion-col>A+</ion-col>
+      <ion-col><ion-toggle [(ngModel)]="profile.isEligible" color="blood" mode="ios"></ion-toggle></ion-col>
+    </ion-row>
+  </ion-grid>
+</div>  
+<div class="quote">“The Blood You Donate Gives Someone Another Chance At Life. One Day That Someone May Be A Close Relative, A Friend, A Loved One—Or Even You.” – Redcrossblood.org</div>
+
+
+    
+</ion-content>

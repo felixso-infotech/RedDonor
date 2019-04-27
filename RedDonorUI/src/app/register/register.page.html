@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar color="blood">
+    <ion-title>register your details</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="register">
+    <form (ngSubmit)="f.form.valid && logForm()" #f="ngForm">
+      <ion-item>
+        <ion-label>Name</ion-label>
+        <ion-input type="text" [(ngModel)]="register.displayName" #displayName="ngModel" name="register.displayName" minlength=1 required="true"></ion-input>
+      </ion-item>
+      <div *ngIf="f.submitted && displayName.invalid">
+          <div class="message" *ngIf="displayName.errors.required">Name is required</div>
+      </div>
+      <ion-item>
+        <ion-label>Phone number</ion-label>
+        <ion-input type="tel" [(ngModel)]="register.phoneNumber" #phoneNumber="ngModel" name="register.phoneNumber" required="true" maxlength=10 pattern="(7|8|9)\d{9}"></ion-input>
+      </ion-item>
+      <div *ngIf="f.submitted && phoneNumber.invalid">
+      <div class="message" *ngIf="phoneNumber.errors.required;else valid">Phone number is required</div>
+          <ng-template #valid><div class="message">Enter a valid phone number</div></ng-template>
+      </div>
+      <ion-item>
+        <ion-label>age</ion-label>
+        <ion-input type="number" [(ngModel)]="register.age" name="register.age"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Location</ion-label>
+        <ion-input type="text" [(ngModel)]="register.location" name="register.location" minlength=2></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Select blood</ion-label>
+        <ion-select name="bloodGroupId" [(ngModel)]="register.bloodGroupId" required #bloodGroup="ngModel">
+          <ion-select-option *ngFor="let bloodGroup of bloodGroups" [value]="bloodGroup.id" required>{{bloodGroup.bloodGroup}}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+      <div *ngIf="f.submitted && bloodGroup.invalid" class="ion-invalid">
+          <div class="message" *ngIf="bloodGroup.errors.required">Please select a blood group</div>
+      </div>
+      <br>
+      <ion-button type="submit" mode="ios" expand="full" fill="solid">Register</ion-button>
+    </form>
+  </div>
+</ion-content>
